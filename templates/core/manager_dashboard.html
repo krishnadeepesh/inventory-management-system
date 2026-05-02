@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12">
+    <div>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Manager Control</h1>
+        <p class="text-slate-500 font-medium">Oversee inventory, manage categories, and process requests.</p>
+    </div>
+    <div class="flex gap-4 w-full lg:w-auto">
+        <a href="{% url 'add_category' %}" class="flex-grow lg:flex-grow-0 bg-white text-slate-700 px-6 py-3.5 rounded-2xl font-bold text-sm shadow-sm border border-slate-200 hover:bg-slate-50 transition flex items-center justify-center gap-2">
+            <i class="fas fa-folder-plus text-primary"></i> New Category
+        </a>
+        <a href="{% url 'add_product' %}" class="flex-grow lg:flex-grow-0 bg-primary text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 hover:bg-primary-dark transition flex items-center justify-center gap-2">
+            <i class="fas fa-plus"></i> Add Product
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+    <!-- Inventory Section -->
+    <div class="xl:col-span-2 space-y-10">
+        <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-8 border-b border-slate-100 bg-white/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <h2 class="text-2xl font-black text-slate-900">Inventory Overview</h2>
+                <select id="manager-cat-filter" class="w-full sm:w-auto bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-slate-600 outline-none focus:border-primary cursor-pointer">
+                    <option value="all">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="p-4 overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th class="px-6 py-4">Product</th>
+                            <th class="px-6 py-4">Stock</th>
+                            <th class="px-6 py-4">Price</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manager-product-tbody" class="divide-y divide-slate-50">
+                        {% for product in products %}
+                        <tr class="hover:bg-slate-50/50 transition manager-product-row" data-category="{{ product.category.id }}">
+                            <td class="px-6 py-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full flex items-center justify-center text-slate-300"><i class="fas fa-box"></i></div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <p class="font-extrabold text-slate-900 leading-tight">{{ product.name }}</p>
+                                        <p class="text-[10px] font-bold text-primary uppercase tracking-widest mt-0.5">{{ product.category.name }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-6">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full {% if product.stock > 10 %}bg-emerald-500{% elif product.stock > 0 %}bg-amber-500{% else %}bg-rose-500{% endif %}"></span>
+                                    <span class="font-black text-slate-700 text-sm">{{ product.stock }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-6">
+                                <p class="font-black text-slate-900">₹{{ product.price }}</p>
+                            </td>
+                            <td class="px-6 py-6 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <a href="{% url 'edit_product' product.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-indigo-50 text-primary hover:bg-primary hover:text-white transition">
+                                        <i class="fas fa-pen-fancy text-xs"></i>
+                                    </a>
+                                    <a href="{% url 'delete_product' product.id %}" class="w-9 h-9 flex items-center justify-center rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition" onclick="return confirm('Delete product?')">
+                                        <i class="fas fa-trash-alt text-xs"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr id="manager-empty-row">
+                            <td colspan="4" class="px-6 py-12 text-center text-slate-400 italic font-medium">No products available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<script>
+// Manager dashboard — client-side category filter
+const managerFilter = document.getElementById('manager-cat-filter');
+if (managerFilter) {
+    managerFilter.addEventListener('change', () => {
+        const selected = managerFilter.value;
+        const rows = document.querySelectorAll('.manager-product-row');
+        let visible = 0;
+        rows.forEach(row => {
+            if (selected === 'all' || row.dataset.category === selected) {
+                row.style.display = '';
+                visible++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        const emptyRow = document.getElementById('manager-empty-row');
+        if (emptyRow) emptyRow.style.display = visible === 0 ? '' : 'none';
+    });
+}
+</script>
+
+        <!-- Categories Section -->
+        <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-sm overflow-hidden">
+            <h2 class="text-2xl font-black text-slate-900 p-8 border-b border-slate-100 bg-white/50">Categories</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-8">
+                {% for cat in categories %}
+                <div class="flex items-center justify-between p-5 rounded-2xl border border-slate-100 bg-white hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-primary flex items-center justify-center font-bold">
+                            {{ cat.name.0|upper }}
+                        </div>
+                        <span class="font-bold text-slate-900">{{ cat.name }}</span>
+                    </div>
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
+                        <a href="{% url 'edit_category' cat.id %}" class="text-slate-400 hover:text-primary transition"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'delete_category' cat.id %}" class="text-slate-400 hover:text-rose-500 transition" onclick="return confirm('Delete category?')"><i class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Requests Log Section -->
+    <div class="space-y-10">
+        <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-premium p-8 h-fit">
+            <h2 class="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
+                <i class="fas fa-inbox text-primary"></i> Incoming Requests
+            </h2>
+            
+            <div class="space-y-6">
+                {% for req in all_requests %}
+                <div class="premium-card p-6 border-slate-100">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs">
+                                {{ req.user.username.0|upper }}
+                            </div>
+                            <div>
+                                <p class="font-extrabold text-slate-900 text-sm leading-tight">{{ req.user.username }}</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ req.created_at|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                        <span class="badge {% if req.status == 'ACCEPTED' %}badge-success{% elif req.status == 'REJECTED' %}badge-danger{% else %}badge-warning{% endif %}">
+                            {{ req.status }}
+                        </span>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-xl p-4 mb-6">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Requesting:</p>
+                        <p class="font-black text-slate-900">{{ req.quantity }}x {{ req.product.name }}</p>
+                    </div>
+
+                    {% if req.status == 'PENDING' %}
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="{% url 'process_request' req.id 'accept' %}" class="flex items-center justify-center gap-2 bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-100">
+                            <i class="fas fa-check"></i> Accept
+                        </a>
+                        <a href="{% url 'process_request' req.id 'reject' %}" class="flex items-center justify-center gap-2 bg-rose-500 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-rose-600 transition shadow-lg shadow-rose-100">
+                            <i class="fas fa-times"></i> Reject
+                        </a>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'feedback' req.user.id %}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-slate-100 text-slate-400 font-bold text-xs hover:border-primary hover:text-primary transition">
+                        <i class="fas fa-comment-dots"></i> Message User
+                    </a>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="text-center py-10">
+                    <p class="text-slate-400 text-sm font-medium italic">No pending requests.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Direct Messaging</h1>
+        <a href="{% url 'redirect_dashboard' %}" class="text-slate-400 hover:text-slate-900 transition"><i class="fas fa-times text-xl"></i></a>
+    </div>
+
+    <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-premium overflow-hidden flex flex-col h-[70vh]">
+        <!-- Chat Header -->
+        <div class="bg-primary p-6 text-white flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-xl border border-white/30">
+                {{ receiver.username.0|upper }}
+            </div>
+            <div>
+                <p class="font-extrabold tracking-tight leading-tight">{{ receiver.username }}</p>
+                <p class="text-[10px] font-black uppercase tracking-widest opacity-70">{{ receiver.role }}</p>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chat-box" class="flex-grow overflow-y-auto p-8 space-y-6 bg-slate-50/50">
+            {% for msg in messages_list %}
+                {% if msg.sender == request.user %}
+                    <div class="flex justify-end">
+                        <div class="max-w-[75%]">
+                            <div class="bg-primary text-white p-4 rounded-2xl rounded-tr-sm shadow-md shadow-primary/10">
+                                <p class="text-sm font-medium">{{ msg.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex justify-start">
+                        <div class="max-w-[75%]">
+                            <div class="bg-white p-4 rounded-2xl rounded-tl-sm border border-slate-100 shadow-sm">
+                                <p class="text-[10px] font-black text-primary uppercase tracking-widest mb-1">{{ msg.sender.username }}</p>
+                                <p class="text-sm font-medium text-slate-700">{{ msg.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="h-full flex flex-col items-center justify-center text-center opacity-40">
+                    <i class="far fa-comments text-6xl mb-4"></i>
+                    <p class="font-bold uppercase tracking-widest text-xs">No messages yet</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-6 bg-white border-t border-slate-100">
+            <form method="post" class="flex gap-4">
+                {% csrf_token %}
+                <div class="flex-grow">
+                    <input type="text" name="content" required placeholder="Type your message here..." 
+                           class="w-full bg-slate-50 border-transparent px-6 py-4 rounded-2xl focus:bg-white focus:ring-primary focus:border-primary">
+                </div>
+                <button type="submit" class="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 hover:bg-primary-dark hover:-translate-y-1 transition active:scale-95">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+{% endblock %}

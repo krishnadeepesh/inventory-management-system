@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockMaster Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#6366f1', dark: '#4f46e5', light: '#a5b4fc' },
+                        sidebar: '#0f172a',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #f1f5f9; }
+        .sidebar { width: 260px; min-height: 100vh; background: #0f172a; position: fixed; top: 0; left: 0; z-index: 50; display: flex; flex-direction: column; }
+        .main-wrap { margin-left: 260px; min-height: 100vh; display: flex; flex-direction: column; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; color: #94a3b8; transition: all .2s; margin-bottom: 4px; }
+        .nav-link:hover, .nav-link.active { background: rgba(99,102,241,.15); color: #a5b4fc; }
+        .nav-link i { width: 20px; text-align: center; }
+        .stat-card { background: white; border-radius: 20px; padding: 28px; box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04); border: 1px solid #f1f5f9; transition: transform .2s, box-shadow .2s; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.08); }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .07em; border-bottom: 1px solid #f1f5f9; }
+        .data-table td { padding: 14px 16px; border-bottom: 1px solid #f8fafc; vertical-align: middle; }
+        .data-table tbody tr:hover { background: #fafbff; }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04); border: 1px solid #f1f5f9; overflow: hidden; }
+        .badge-success { background: #dcfce7; color: #16a34a; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .badge-warning { background: #fef9c3; color: #b45309; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .badge-danger { background: #fee2e2; color: #dc2626; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .input-field { width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-family: Inter, sans-serif; outline: none; transition: border-color .2s; }
+        .input-field:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+        .btn-primary { background: #6366f1; color: white; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; border: none; cursor: pointer; transition: background .2s, transform .1s; }
+        .btn-primary:hover { background: #4f46e5; }
+        .btn-primary:active { transform: scale(.97); }
+    </style>
+</head>
+<body class="font-sans text-slate-800">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+        <!-- Logo -->
+        <div class="px-6 py-5 border-b border-slate-800">
+            <a href="{% url 'homepage' %}" class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-cube text-white text-sm"></i>
+                </div>
+                <div>
+                    <p class="text-white font-extrabold text-sm leading-none">StockMaster</p>
+                    <p class="text-slate-500 text-[10px] font-semibold uppercase tracking-widest mt-0.5">Pro</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-grow px-4 py-6 overflow-y-auto">
+            {% if user.is_authenticated %}
+                <p class="text-[10px] font-black text-slate-600 uppercase tracking-widest px-2 mb-3">Navigation</p>
+                {% if user.role == 'ADMIN' %}
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                        <i class="fas fa-gauge-high"></i> Dashboard
+                    </a>
+                {% elif user.role == 'MANAGER' %}
+                    <a href="{% url 'manager_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}">
+                        <i class="fas fa-gauge-high"></i> Dashboard
+                    </a>
+                    <a href="{% url 'add_product' %}" class="nav-link {% if request.resolver_match.url_name == 'add_product' %}active{% endif %}">
+                        <i class="fas fa-plus-circle"></i> Add Product
+                    </a>
+                    <a href="{% url 'add_category' %}" class="nav-link {% if request.resolver_match.url_name == 'add_category' %}active{% endif %}">
+                        <i class="fas fa-folder-plus"></i> Add Category
+                    </a>
+                {% else %}
+                    <a href="{% url 'user_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
+                        <i class="fas fa-store"></i> Marketplace
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'homepage' %}" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="{% url 'login' %}" class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="{% url 'signup' %}" class="nav-link"><i class="fas fa-user-plus"></i> Sign Up</a>
+            {% endif %}
+        </nav>
+
+        <!-- User Section -->
+        {% if user.is_authenticated %}
+        <div class="px-4 py-4 border-t border-slate-800">
+            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                    {{ user.username.0|upper }}
+                </div>
+                <div class="flex-grow min-w-0">
+                    <p class="text-white text-sm font-semibold truncate leading-none">{{ user.username }}</p>
+                    <p class="text-slate-500 text-[10px] font-semibold uppercase tracking-wider mt-1">{{ user.role }}</p>
+                </div>
+                <a href="{% url 'logout' %}" title="Logout" class="text-slate-600 hover:text-rose-400 transition ml-1">
+                    <i class="fas fa-sign-out-alt text-sm"></i>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </aside>
+
+    <!-- ── Main Wrap ── -->
+    <div class="main-wrap">
+        <!-- Top Header -->
+        <header class="bg-white border-b border-slate-100 px-8 py-4 sticky top-0 z-40 flex items-center justify-between">
+            <div>
+                {% block page_title %}
+                <h1 class="text-lg font-bold text-slate-800">Dashboard</h1>
+                {% endblock %}
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-xs font-semibold text-slate-400">{{ user.role|default:"Guest" }}</span>
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold">
+                    {% if user.is_authenticated %}{{ user.username.0|upper }}{% else %}?{% endif %}
+                </div>
+            </div>
+        </header>
+
+        <!-- Toast Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        toast: true, position: 'top-end',
+                        icon: '{% if "error" in message.tags %}error{% elif "warning" in message.tags %}warning{% else %}success{% endif %}',
+                        title: '{{ message|escapejs }}',
+                        showConfirmButton: false, timer: 3500, timerProgressBar: true,
+                    });
+                });
+            </script>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Content -->
+        <main class="p-8 flex-grow">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="px-8 py-4 border-t border-slate-100 bg-white">
+            <p class="text-xs text-slate-400 font-medium">&copy; 2026 StockMaster Pro. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

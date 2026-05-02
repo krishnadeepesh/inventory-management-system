@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row gap-8">
+    <!-- Main Content -->
+    <div class="flex-grow">
+        <div class="mb-10">
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Marketplace</h1>
+            <p class="text-slate-500 font-medium">Browse available products and manage your requests.</p>
+        </div>
+
+        <!-- Category Filter (client-side, no page refresh) -->
+        <div class="glass-card p-6 rounded-3xl mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex flex-wrap items-center gap-3 w-full">
+                <button
+                    class="category-btn active-cat px-5 py-2 rounded-full font-bold text-sm border-2 border-primary bg-primary text-white transition"
+                    data-category="all">All Categories</button>
+                {% for cat in categories %}
+                <button
+                    class="category-btn px-5 py-2 rounded-full font-bold text-sm border-2 border-slate-200 bg-white text-slate-600 hover:border-primary hover:text-primary transition"
+                    data-category="{{ cat.id }}">{{ cat.name }}</button>
+                {% endfor %}
+            </div>
+            <div class="flex-shrink-0">
+                <span id="product-count" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Showing
+                    {{ products|length }} Products</span>
+            </div>
+        </div>
+
+        <!-- Product Grid (all rendered, filtered via JS) -->
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {% for product in products %}
+            <div class="premium-card flex flex-col overflow-hidden product-item"
+                data-category="{{ product.category.id }}">
+                <div class="h-56 bg-slate-100 relative group overflow-hidden">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-slate-300">
+                        <i class="fas fa-box text-5xl"></i>
+                    </div>
+                    {% endif %}
+                    <!-- Stock Status Badge (no number shown here) -->
+                    <div class="absolute top-4 right-4">
+                        {% if product.stock > 10 %}
+                        <span class="badge badge-success">In Stock</span>
+                        {% elif product.stock > 0 %}
+                        <span class="badge badge-warning">Limited</span>
+                        {% else %}
+                        <span class="badge badge-danger">Out of Stock</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <p class="text-xs font-bold text-primary uppercase tracking-widest mb-1">{{ product.category.name }}
+                    </p>
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-2 leading-tight">{{ product.name }}</h3>
+                    <p class="text-slate-500 text-sm mb-4 line-clamp-2">{{ product.description|default:"No description
+                        provided." }}</p>
+
+                    <!-- Stock count shown separately -->
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">
+                        <i class="fas fa-cubes mr-1"></i>
+                        {% if product.stock > 0 %}
+                        {{ product.stock }} units available
+                        {% else %}
+                        Currently unavailable
+                        {% endif %}
+                    </p>
+
+                    <div class="mt-auto flex items-center justify-between">
+                        <div>
+                            <span class="text-2xl font-black text-slate-900">₹{{ product.price }}</span>
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-tighter">Per
+                                Unit</span>
+                        </div>
+                        <a href="{% url 'product_detail' product.id %}"
+                            class="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-primary transition shadow-lg shadow-slate-200 active:scale-95">
+                            Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full py-20 text-center">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-box-open text-3xl text-slate-300"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">No products found</h3>
+                <p class="text-slate-500">No products are available right now.</p>
+            </div>
+            {% endfor %}
+
+            <!-- Empty state shown by JS when filter yields nothing -->
+            <div id="no-results" class="col-span-full py-20 text-center hidden">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-filter text-3xl text-slate-300"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">No products in this category</h3>
+                <p class="text-slate-500">Try selecting a different category.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar: Recent Requests -->
+    <div class="lg:w-96 flex-shrink-0">
+        <div class="glass-card rounded-[2.5rem] p-8 sticky top-28 border-slate-200 shadow-premium">
+            <h2 class="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
+                <i class="fas fa-history text-primary"></i> My Requests
+            </h2>
+
+            <div class="space-y-6">
+                {% for order in my_requests %}
+                <div
+                    class="flex gap-4 p-4 rounded-2xl hover:bg-white transition group border border-transparent hover:border-slate-100 hover:shadow-sm">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 font-bold group-hover:bg-primary/5 group-hover:text-primary transition">
+                        {{ order.product.name.0|upper }}
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start mb-1">
+                            <p class="font-bold text-slate-900 text-sm leading-tight">{{ order.product.name }}</p>
+                            <span class="text-[10px] font-black uppercase tracking-widest 
+                                {% if order.status == 'ACCEPTED' %}text-emerald-600
+                                {% elif order.status == 'REJECTED' %}text-rose-600
+                                {% else %}text-amber-600{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{
+                                order.created_at|date:"M d, Y" }} • Qty: {{ order.quantity }}</p>
+                            <a href="{% url 'feedback' order.product.manager.id %}"
+                                class="text-primary hover:text-primary-dark transition text-xs">
+                                <i class="fas fa-comment-dots"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-10">
+                    <p class="text-slate-400 text-sm font-medium italic">No recent requests. Browse the marketplace to
+                        place orders!</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if my_requests %}
+            <button
+                class="w-full mt-8 py-4 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 font-bold text-xs hover:border-primary hover:text-primary transition">
+                View All History
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Client-side category filtering — no page refresh
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const productItems = document.querySelectorAll('.product-item');
+    const productCount = document.getElementById('product-count');
+    const noResults = document.getElementById('no-results');
+
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update button styles
+            categoryBtns.forEach(b => {
+                b.classList.remove('active-cat', 'bg-primary', 'text-white', 'border-primary');
+                b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+            });
+            btn.classList.add('active-cat', 'bg-primary', 'text-white', 'border-primary');
+            btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+
+            const selected = btn.dataset.category;
+            let visible = 0;
+
+            productItems.forEach(item => {
+                if (selected === 'all' || item.dataset.category === selected) {
+                    item.style.display = '';
+                    visible++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Update count
+            productCount.textContent = `Showing ${visible} Product${visible !== 1 ? 's' : ''}`;
+
+            // Show/hide no-results message
+            if (visible === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        });
+    });
+</script>
+{% endblock %}
