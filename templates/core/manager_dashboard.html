@@ -134,55 +134,15 @@ if (managerFilter) {
 
     <!-- Requests Log Section -->
     <div class="space-y-10">
-        <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-premium p-8 h-fit">
-            <h2 class="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
-                <i class="fas fa-inbox text-primary"></i> Incoming Requests
-            </h2>
-            
-            <div class="space-y-6">
-                {% for req in all_requests %}
-                <div class="premium-card p-6 border-slate-100">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs">
-                                {{ req.user.username.0|upper }}
-                            </div>
-                            <div>
-                                <p class="font-extrabold text-slate-900 text-sm leading-tight">{{ req.user.username }}</p>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ req.created_at|date:"M d, Y" }}</p>
-                            </div>
-                        </div>
-                        <span class="badge {% if req.status == 'ACCEPTED' %}badge-success{% elif req.status == 'REJECTED' %}badge-danger{% else %}badge-warning{% endif %}">
-                            {{ req.status }}
-                        </span>
-                    </div>
-                    
-                    <div class="bg-slate-50 rounded-xl p-4 mb-6">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Requesting:</p>
-                        <p class="font-black text-slate-900">{{ req.quantity }}x {{ req.product.name }}</p>
-                    </div>
-
-                    {% if req.status == 'PENDING' %}
-                    <div class="grid grid-cols-2 gap-3">
-                        <a href="{% url 'process_request' req.id 'accept' %}" class="flex items-center justify-center gap-2 bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-100">
-                            <i class="fas fa-check"></i> Accept
-                        </a>
-                        <a href="{% url 'process_request' req.id 'reject' %}" class="flex items-center justify-center gap-2 bg-rose-500 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-rose-600 transition shadow-lg shadow-rose-100">
-                            <i class="fas fa-times"></i> Reject
-                        </a>
-                    </div>
-                    {% else %}
-                    <a href="{% url 'feedback' req.user.id %}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-slate-100 text-slate-400 font-bold text-xs hover:border-primary hover:text-primary transition">
-                        <i class="fas fa-comment-dots"></i> Message User
-                    </a>
-                    {% endif %}
-                </div>
-                {% empty %}
-                <div class="text-center py-10">
-                    <p class="text-slate-400 text-sm font-medium italic">No pending requests.</p>
-                </div>
-                {% endfor %}
+        <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-premium p-8 h-fit flex flex-col items-center justify-center text-center">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-primary flex items-center justify-center text-2xl mb-4">
+                <i class="fas fa-inbox"></i>
             </div>
+            <h2 class="text-xl font-black text-slate-900 mb-2">Requests & Messages</h2>
+            <p class="text-slate-500 text-sm mb-6">Manage user purchase requests and messages.</p>
+            <a href="#" class="bg-primary text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 hover:bg-primary-dark transition flex items-center justify-center gap-2 w-full max-w-xs">
+                View Requests <i class="fas fa-arrow-right text-sm"></i>
+            </a>
         </div>
     </div>
 </div>
