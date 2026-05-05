@@ -287,7 +287,7 @@ def process_request(request, req_id, action):
             purchase_request.save()
             messages.info(request, 'Request rejected.')
             
-    return redirect('manager_dashboard')
+    return redirect('manager_requests')
 
 # ----- USER VIEWS -----
 @login_required
