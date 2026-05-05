@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+<div>
+    <h1 class="text-lg font-bold text-slate-800">Transaction History</h1>
+    <p class="text-xs text-slate-400 font-medium">View and filter all system transactions</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-between">
+    <a href="{% url 'admin_dashboard' %}" class="btn-primary bg-white text-slate-700 border border-slate-200 shadow-sm hover:bg-slate-50 text-sm py-2 px-4 flex items-center gap-2 w-fit">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<div class="card lg:col-span-2 mb-8">
+    <div class="px-7 py-5 border-b border-slate-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center">
+                <i class="fas fa-receipt text-rose-500 text-sm"></i>
+            </div>
+            <h2 class="text-base font-bold text-slate-800">Transactions</h2>
+        </div>
+        <select id="admin-manager-filter" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-indigo-400 cursor-pointer text-slate-600">
+            <option value="all">All Managers</option>
+            {% for manager in managers %}
+            <option value="{{ manager.id }}">{{ manager.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Product</th>
+                    <th>Manager</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="transaction-row" data-manager="{{ order.product.manager.id }}">
+                    <td class="text-xs font-semibold text-slate-400">{{ order.created_at|date:"M d, Y" }}</td>
+                    <td class="font-semibold text-slate-700 text-sm">{{ order.user.username }}</td>
+                    <td class="text-sm text-slate-600">{{ order.product.name }} <span class="text-slate-400 text-xs">×{{ order.quantity }}</span></td>
+                    <td class="text-sm text-slate-600">{{ order.product.manager.username }}</td>
+                    <td>
+                        <span class="{% if order.status == 'ACCEPTED' %}badge-success{% elif order.status == 'REJECTED' %}badge-danger{% else %}badge-warning{% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="no-transactions-row">
+                    <td colspan="5" class="text-center py-10 text-slate-400 italic text-sm">No transactions yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Hidden by default, shown by JS if filter returns empty -->
+        <div id="filter-empty-state" class="hidden text-center py-10 text-slate-400 italic text-sm">
+            No transactions found for the selected manager.
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterSelect = document.getElementById('admin-manager-filter');
+    if (filterSelect) {
+        filterSelect.addEventListener('change', function() {
+            const selectedManager = this.value;
+            let visibleCount = 0;
+            const rows = document.querySelectorAll('.transaction-row');
+            
+            rows.forEach(row => {
+                if (selectedManager === 'all' || row.dataset.manager === selectedManager) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            const emptyState = document.getElementById('filter-empty-state');
+            const noTxRow = document.getElementById('no-transactions-row');
+            
+            if (noTxRow) {
+                // If there are literally no transactions in DB
+            } else if (visibleCount === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

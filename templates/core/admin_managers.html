@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+<div>
+    <h1 class="text-lg font-bold text-slate-800">Team Management</h1>
+    <p class="text-xs text-slate-400 font-medium">View and manage system managers</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <a href="{% url 'admin_dashboard' %}" class="btn-primary bg-white text-slate-700 border border-slate-200 shadow-sm hover:bg-slate-50 text-sm py-2 px-4 flex items-center gap-2">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    <a href="{% url 'admin_add_manager' %}" class="btn-primary bg-primary text-white shadow-sm shadow-primary/30 text-sm py-2 px-4 flex items-center gap-2">
+        <i class="fas fa-user-plus"></i> Add New Manager
+    </a>
+</div>
+
+<div class="card max-w-4xl mx-auto flex flex-col">
+    <div class="px-7 py-5 border-b border-slate-50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center">
+                <i class="fas fa-people-group text-violet-500 text-sm"></i>
+            </div>
+            <h2 class="text-base font-bold text-slate-800">Team Members</h2>
+        </div>
+        <span class="text-xs font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full">{{ managers|length }} Active</span>
+    </div>
+    <div class="overflow-y-auto divide-y divide-slate-50">
+        {% for manager in managers %}
+        <div class="flex items-center gap-4 px-7 py-4 hover:bg-slate-50 transition group">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                {{ manager.username.0|upper }}
+            </div>
+            <div class="flex-grow min-w-0">
+                <p class="font-bold text-slate-800 text-base leading-none mb-1">{{ manager.username }}</p>
+                <p class="text-sm text-slate-400 truncate">{{ manager.email }}</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-xs font-bold bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg">Active</span>
+                <a href="{% url 'delete_manager' manager.id %}"
+                   onclick="return confirm('Remove this manager?')"
+                   class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition shadow-sm border border-transparent hover:border-rose-100">
+                    <i class="fas fa-trash-alt text-sm"></i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="px-7 py-16 text-center">
+            <div class="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-user-slash text-slate-300 text-2xl"></i>
+            </div>
+            <p class="text-slate-500 font-medium">No managers found.</p>
+            <p class="text-slate-400 text-sm italic mt-1">Click the "Add New Manager" button to create one.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
