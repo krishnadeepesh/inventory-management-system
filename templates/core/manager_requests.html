@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12">
+    <div>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Incoming Requests</h1>
+        <p class="text-slate-500 font-medium">Review and process user purchase requests.</p>
+    </div>
+    <div class="flex gap-4 w-full lg:w-auto">
+        <a href="{% url 'manager_dashboard' %}" class="flex-grow lg:flex-grow-0 bg-white text-slate-700 px-6 py-3.5 rounded-2xl font-bold text-sm shadow-sm border border-slate-200 hover:bg-slate-50 transition flex items-center justify-center gap-2">
+            <i class="fas fa-arrow-left text-primary"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    {% for req in all_requests %}
+    <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-premium p-8 h-fit">
+        <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs">
+                    {{ req.user.username.0|upper }}
+                </div>
+                <div>
+                    <p class="font-extrabold text-slate-900 text-sm leading-tight">{{ req.user.username }}</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ req.created_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+            <span class="badge {% if req.status == 'ACCEPTED' %}badge-success{% elif req.status == 'REJECTED' %}badge-danger{% else %}badge-warning{% endif %}">
+                {{ req.status }}
+            </span>
+        </div>
+        
+        <div class="bg-slate-50 rounded-xl p-4 mb-6">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Requesting:</p>
+            <p class="font-black text-slate-900">{{ req.quantity }}x {{ req.product.name }}</p>
+        </div>
+
+        {% if req.status == 'PENDING' %}
+        <div class="grid grid-cols-2 gap-3">
+            <a href="{% url 'process_request' req.id 'accept' %}" class="flex items-center justify-center gap-2 bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-600 transition shadow-lg shadow-emerald-100">
+                <i class="fas fa-check"></i> Accept
+            </a>
+            <a href="{% url 'process_request' req.id 'reject' %}" class="flex items-center justify-center gap-2 bg-rose-500 text-white py-2.5 rounded-xl text-xs font-bold hover:bg-rose-600 transition shadow-lg shadow-rose-100">
+                <i class="fas fa-times"></i> Reject
+            </a>
+        </div>
+        {% else %}
+        <a href="{% url 'feedback' req.user.id %}" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-slate-100 text-slate-400 font-bold text-xs hover:border-primary hover:text-primary transition">
+            <i class="fas fa-comment-dots"></i> Message User
+        </a>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="col-span-full text-center py-20 glass-card rounded-[2.5rem]">
+        <div class="w-20 h-20 mx-auto rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-3xl mb-4">
+            <i class="fas fa-inbox"></i>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">No pending requests</h3>
+        <p class="text-slate-500">You're all caught up!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

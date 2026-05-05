@@ -159,6 +159,18 @@ def manager_dashboard(request):
     return render(request, 'core/manager_dashboard.html', context)
 
 @login_required
+def manager_requests(request):
+    if request.user.role != 'MANAGER':
+        return redirect('redirect_dashboard')
+    
+    all_requests = PurchaseRequest.objects.filter(product__manager=request.user).order_by('-created_at')
+    
+    context = {
+        'all_requests': all_requests,
+    }
+    return render(request, 'core/manager_requests.html', context)
+
+@login_required
 def add_product(request):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
