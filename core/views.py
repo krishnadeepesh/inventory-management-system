@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Sum, Count
 from django.contrib import messages
@@ -9,6 +10,7 @@ from .models import User, Category, Product, PurchaseRequest, FeedbackMessage
 from .forms import UserSignupForm, CategoryForm, ProductForm, PurchaseRequestForm, FeedbackMessageForm
 from django.db import transaction
 
+@never_cache
 def homepage(request):
     # If user is already logged in, redirect to their dashboard
     if request.user.is_authenticated:
@@ -20,7 +22,17 @@ def homepage(request):
             return redirect('user_dashboard')
     return render(request, 'core/homepage.html')
 
+@never_cache
 def user_signup(request):
+    # If user is already logged in, redirect to their dashboard
+    if request.user.is_authenticated:
+        if request.user.role == 'ADMIN':
+            return redirect('admin_dashboard')
+        elif request.user.role == 'MANAGER':
+            return redirect('manager_dashboard')
+        else:
+            return redirect('user_dashboard')
+            
     if request.method == 'POST':
         form = UserSignupForm(request.POST)
         if form.is_valid():
@@ -31,6 +43,7 @@ def user_signup(request):
         form = UserSignupForm()
     return render(request, 'core/signup.html', {'form': form})
 
+@never_cache
 def custom_login(request):
     # If user is already logged in, redirect to their dashboard
     if request.user.is_authenticated:
