@@ -104,7 +104,34 @@ def admin_dashboard(request):
     orders = PurchaseRequest.objects.all().order_by('-created_at')
     
     if request.method == 'POST':
-        # Add a new manager
+        # Removed add manager logic from here
+        return redirect('admin_dashboard')
+    
+    context = {
+        'total_sales': total_sales,
+        'total_users': total_users,
+        'total_managers': total_managers,
+        'products': products,
+        'categories': categories,
+    }
+    return render(request, 'core/admin_dashboard.html', context)
+
+@login_required
+def admin_transactions(request):
+    if request.user.role != 'ADMIN':
+        return redirect('redirect_dashboard')
+    
+    orders = PurchaseRequest.objects.all().order_by('-created_at')
+    managers = User.objects.filter(role='MANAGER')
+    
+    return render(request, 'core/admin_transactions.html', {'orders': orders, 'managers': managers})
+
+@login_required
+def admin_add_manager(request):
+    if request.user.role != 'ADMIN':
+        return redirect('redirect_dashboard')
+        
+    if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -115,18 +142,17 @@ def admin_dashboard(request):
         else:
             User.objects.create_user(username=username, email=email, password=password, role='MANAGER')
             messages.success(request, f'Manager "{username}" added successfully!')
-        return redirect('admin_dashboard')
-    
-    context = {
-        'total_sales': total_sales,
-        'total_users': total_users,
-        'total_managers': total_managers,
-        'managers': managers,
-        'products': products,
-        'categories': categories,
-        'orders': orders,
-    }
-    return render(request, 'core/admin_dashboard.html', context)
+            return redirect('admin_managers')
+            
+    return render(request, 'core/admin_add_manager.html')
+
+@login_required
+def admin_managers(request):
+    if request.user.role != 'ADMIN':
+        return redirect('redirect_dashboard')
+        
+    managers = User.objects.filter(role='MANAGER')
+    return render(request, 'core/admin_managers.html', {'managers': managers})
 
 @login_required
 def delete_manager(request, manager_id):
@@ -135,7 +161,7 @@ def delete_manager(request, manager_id):
     manager = get_object_or_404(User, id=manager_id, role='MANAGER')
     manager.delete()
     messages.success(request, 'Manager deleted.')
-    return redirect('admin_dashboard')
+    return redirect('admin_managers')
 
 # ----- MANAGER VIEWS -----
 @login_required
@@ -302,14 +328,20 @@ def user_dashboard(request):
     else:
         products = Product.objects.filter(is_active=True)
         
-    my_requests = PurchaseRequest.objects.filter(user=request.user).order_by('-created_at')
-        
     context = {
         'categories': categories,
         'products': products,
-        'my_requests': my_requests,
     }
     return render(request, 'core/user_dashboard.html', context)
+
+@login_required
+def user_requests(request):
+    if request.user.role != 'USER':
+        return redirect('redirect_dashboard')
+        
+    my_requests = PurchaseRequest.objects.filter(user=request.user).order_by('-created_at')
+    
+    return render(request, 'core/user_requests.html', {'my_requests': my_requests})
 
 @login_required
 def product_detail(request, pk):

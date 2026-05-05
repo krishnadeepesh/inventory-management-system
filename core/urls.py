@@ -12,6 +12,9 @@ urlpatterns = [
     
     # Admin
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin/transactions/', views.admin_transactions, name='admin_transactions'),
+    path('admin/add-manager/', views.admin_add_manager, name='admin_add_manager'),
+    path('admin/managers/', views.admin_managers, name='admin_managers'),
     path('delete-manager/<int:manager_id>/', views.delete_manager, name='delete_manager'),
     
     # Manager
@@ -27,6 +30,7 @@ urlpatterns = [
     
     # User
     path('user-dashboard/', views.user_dashboard, name='user_dashboard'),
+    path('user/requests/', views.user_requests, name='user_requests'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
     
     # Common

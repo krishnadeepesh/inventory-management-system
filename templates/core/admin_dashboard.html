@@ -43,76 +43,27 @@
     </div>
 </div>
 
-<!-- Add Manager + Team List -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <!-- Add Manager Form -->
-    <div class="card">
-        <div class="px-7 py-5 border-b border-slate-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center">
-                <i class="fas fa-user-plus text-indigo-500 text-sm"></i>
-            </div>
-            <h2 class="text-base font-bold text-slate-800">Add New Manager</h2>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 mb-8">
+    <a href="{% url 'admin_transactions' %}" class="flex-1 bg-white border border-slate-200 text-slate-700 py-4 px-6 rounded-2xl font-bold hover:border-indigo-300 hover:shadow-lg hover:-translate-y-1 transition text-center flex items-center justify-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center">
+            <i class="fas fa-receipt"></i>
         </div>
-        <div class="p-7">
-            <form method="post" class="space-y-4">
-                {% csrf_token %}
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1.5">Username</label>
-                        <input type="text" name="username" required placeholder="manager_name" class="input-field">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1.5">Email Address</label>
-                        <input type="email" name="email" required placeholder="manager@email.com" class="input-field">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">Temporary Password</label>
-                    <input type="password" name="password" required placeholder="••••••••" class="input-field">
-                </div>
-                <button type="submit" class="btn-primary w-full mt-2">
-                    <i class="fas fa-plus mr-2"></i>Create Manager Account
-                </button>
-            </form>
+        View Transaction History
+    </a>
+    <a href="{% url 'admin_managers' %}" class="flex-1 bg-white border border-slate-200 text-slate-700 py-4 px-6 rounded-2xl font-bold hover:border-violet-300 hover:shadow-lg hover:-translate-y-1 transition text-center flex items-center justify-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-500 flex items-center justify-center">
+            <i class="fas fa-people-group"></i>
         </div>
-    </div>
-
-    <!-- Managers List -->
-    <div class="card flex flex-col">
-        <div class="px-7 py-5 border-b border-slate-50 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center">
-                    <i class="fas fa-people-group text-violet-500 text-sm"></i>
-                </div>
-                <h2 class="text-base font-bold text-slate-800">Team</h2>
-            </div>
-            <span class="text-xs font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full">{{ managers|length }} Active</span>
+        Manage Team
+    </a>
+    <a href="{% url 'admin_add_manager' %}" class="flex-1 bg-primary text-white py-4 px-6 rounded-2xl font-bold shadow-lg shadow-primary/30 hover:bg-primary-dark hover:-translate-y-1 transition text-center flex items-center justify-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center">
+            <i class="fas fa-user-plus"></i>
         </div>
-        <div class="overflow-y-auto max-h-72 divide-y divide-slate-50">
-            {% for manager in managers %}
-            <div class="flex items-center gap-4 px-7 py-4 hover:bg-slate-50 transition group">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                    {{ manager.username.0|upper }}
-                </div>
-                <div class="flex-grow min-w-0">
-                    <p class="font-semibold text-slate-800 text-sm leading-none">{{ manager.username }}</p>
-                    <p class="text-xs text-slate-400 mt-1 truncate">{{ manager.email }}</p>
-                </div>
-                <a href="{% url 'delete_manager' manager.id %}"
-                   onclick="return confirm('Remove this manager?')"
-                   class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition opacity-0 group-hover:opacity-100">
-                    <i class="fas fa-trash-alt text-xs"></i>
-                </a>
-            </div>
-            {% empty %}
-            <div class="px-7 py-10 text-center">
-                <p class="text-slate-400 text-sm italic">No managers yet. Add one above.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+        Add New Manager
+    </a>
 </div>
-
 <!-- Products Table -->
 <div class="card mb-6">
     <div class="px-7 py-5 border-b border-slate-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -175,10 +126,9 @@
     </div>
 </div>
 
-<!-- Categories & Transaction History side by side on large screens -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <!-- Categories -->
-    <div class="card lg:col-span-1">
+<!-- Categories -->
+<div class="grid grid-cols-1 md:grid-cols-3 mb-6">
+    <div class="card">
         <div class="px-7 py-5 border-b border-slate-50 flex items-center gap-3">
             <div class="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center">
                 <i class="fas fa-tags text-amber-500 text-sm"></i>
@@ -196,46 +146,6 @@
             {% empty %}
             <p class="text-center text-slate-400 italic text-sm py-6">No categories yet.</p>
             {% endfor %}
-        </div>
-    </div>
-
-    <!-- Transaction History -->
-    <div class="card lg:col-span-2">
-        <div class="px-7 py-5 border-b border-slate-50 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center">
-                <i class="fas fa-receipt text-rose-500 text-sm"></i>
-            </div>
-            <h2 class="text-base font-bold text-slate-800">Transaction History</h2>
-        </div>
-        <div class="overflow-x-auto max-h-72 overflow-y-auto">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>User</th>
-                        <th>Product</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td class="text-xs font-semibold text-slate-400">{{ order.created_at|date:"M d, Y" }}</td>
-                        <td class="font-semibold text-slate-700 text-sm">{{ order.user.username }}</td>
-                        <td class="text-sm text-slate-600">{{ order.product.name }} <span class="text-slate-400 text-xs">×{{ order.quantity }}</span></td>
-                        <td>
-                            <span class="{% if order.status == 'ACCEPTED' %}badge-success{% elif order.status == 'REJECTED' %}badge-danger{% else %}badge-warning{% endif %}">
-                                {{ order.status }}
-                            </span>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center py-10 text-slate-400 italic text-sm">No transactions yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
