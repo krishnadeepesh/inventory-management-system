@@ -17,7 +17,7 @@ mysql -e "CREATE DATABASE IF NOT EXISTS inventory_db;"
 # Create user (ignoring error if it already exists)
 mysql -e "CREATE USER IF NOT EXISTS 'root'@'localhost' IDENTIFIED BY 'root';" || true
 # Alternatively, alter user if it already exists to set the password
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';" || true
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';" || true
 mysql -e "GRANT ALL PRIVILEGES ON inventory_db.* TO 'root'@'localhost';"
 mysql -e "FLUSH PRIVILEGES;"
 
