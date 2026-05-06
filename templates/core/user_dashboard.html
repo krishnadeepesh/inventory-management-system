@@ -40,7 +40,7 @@
                 <div class="h-56 bg-slate-100 relative group overflow-hidden">
                     {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}"
-                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        class="w-full h-full object-contain transition duration-500 group-hover:scale-110">
                     {% else %}
                     <div class="w-full h-full flex items-center justify-center text-slate-300">
                         <i class="fas fa-box text-5xl"></i>
@@ -61,8 +61,7 @@
                     <p class="text-xs font-bold text-primary uppercase tracking-widest mb-1">{{ product.category.name }}
                     </p>
                     <h3 class="text-xl font-extrabold text-slate-900 mb-2 leading-tight">{{ product.name }}</h3>
-                    <p class="text-slate-500 text-sm mb-4 line-clamp-2">{{ product.description|default:"No description
-                        provided." }}</p>
+                    <p class="text-slate-500 text-sm mb-4 line-clamp-2">{{ product.description|default:"No description provided." }}</p>
 
                     <!-- Stock count shown separately -->
                     <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">
