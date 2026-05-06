@@ -76,6 +76,7 @@ def custom_logout(request):
     return redirect('homepage')
 
 @login_required
+@never_cache
 def redirect_dashboard(request):
     if request.user.role == 'ADMIN':
         return redirect('admin_dashboard')
@@ -86,6 +87,7 @@ def redirect_dashboard(request):
 
 # ----- ADMIN VIEWS -----
 @login_required
+@never_cache
 def admin_dashboard(request):
     if request.user.role != 'ADMIN':
         return redirect('redirect_dashboard')
@@ -117,6 +119,7 @@ def admin_dashboard(request):
     return render(request, 'core/admin_dashboard.html', context)
 
 @login_required
+@never_cache
 def admin_transactions(request):
     if request.user.role != 'ADMIN':
         return redirect('redirect_dashboard')
@@ -127,6 +130,7 @@ def admin_transactions(request):
     return render(request, 'core/admin_transactions.html', {'orders': orders, 'managers': managers})
 
 @login_required
+@never_cache
 def admin_add_manager(request):
     if request.user.role != 'ADMIN':
         return redirect('redirect_dashboard')
@@ -147,6 +151,7 @@ def admin_add_manager(request):
     return render(request, 'core/admin_add_manager.html')
 
 @login_required
+@never_cache
 def admin_managers(request):
     if request.user.role != 'ADMIN':
         return redirect('redirect_dashboard')
@@ -155,6 +160,7 @@ def admin_managers(request):
     return render(request, 'core/admin_managers.html', {'managers': managers})
 
 @login_required
+@never_cache
 def delete_manager(request, manager_id):
     if request.user.role != 'ADMIN':
         return redirect('redirect_dashboard')
@@ -165,6 +171,7 @@ def delete_manager(request, manager_id):
 
 # ----- MANAGER VIEWS -----
 @login_required
+@never_cache
 def manager_dashboard(request):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -185,6 +192,7 @@ def manager_dashboard(request):
     return render(request, 'core/manager_dashboard.html', context)
 
 @login_required
+@never_cache
 def manager_requests(request):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -197,6 +205,7 @@ def manager_requests(request):
     return render(request, 'core/manager_requests.html', context)
 
 @login_required
+@never_cache
 def add_product(request):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -213,6 +222,7 @@ def add_product(request):
     return render(request, 'core/add_product.html', {'form': form})
 
 @login_required
+@never_cache
 def add_category(request):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -227,6 +237,7 @@ def add_category(request):
     return render(request, 'core/add_category.html', {'form': form})
 
 @login_required
+@never_cache
 def edit_product(request, pk):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -242,6 +253,7 @@ def edit_product(request, pk):
     return render(request, 'core/edit_product.html', {'form': form, 'product': product})
 
 @login_required
+@never_cache
 def delete_product(request, pk):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -259,6 +271,7 @@ def delete_product(request, pk):
     return redirect('manager_dashboard')
 
 @login_required
+@never_cache
 def edit_category(request, pk):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -274,6 +287,7 @@ def edit_category(request, pk):
     return render(request, 'core/edit_category.html', {'form': form, 'category': category})
 
 @login_required
+@never_cache
 def delete_category(request, pk):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -292,6 +306,7 @@ def delete_category(request, pk):
 
 
 @login_required
+@never_cache
 def process_request(request, req_id, action):
     if request.user.role != 'MANAGER':
         return redirect('redirect_dashboard')
@@ -317,6 +332,7 @@ def process_request(request, req_id, action):
 
 # ----- USER VIEWS -----
 @login_required
+@never_cache
 def user_dashboard(request):
     if request.user.role != 'USER':
         return redirect('redirect_dashboard')
@@ -335,6 +351,7 @@ def user_dashboard(request):
     return render(request, 'core/user_dashboard.html', context)
 
 @login_required
+@never_cache
 def user_requests(request):
     if request.user.role != 'USER':
         return redirect('redirect_dashboard')
@@ -344,6 +361,7 @@ def user_requests(request):
     return render(request, 'core/user_requests.html', {'my_requests': my_requests})
 
 @login_required
+@never_cache
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -361,6 +379,7 @@ def product_detail(request, pk):
     return render(request, 'core/product_detail.html', {'product': product, 'form': form})
 
 @login_required
+@never_cache
 def feedback(request, receiver_id):
     receiver = get_object_or_404(User, id=receiver_id)
     if request.method == 'POST':
