@@ -3,9 +3,9 @@
 {% block content %}
 <div class="min-h-[70vh] flex items-center justify-center py-12">
     <div class="premium-card w-full max-w-md overflow-hidden relative">
-        <div class="bg-gradient-to-br from-emerald-500 to-primary p-10 text-white text-center">
+        <div class="bg-gradient-to-br from-secondary to-primary p-10 text-white text-center">
             <h2 class="text-4xl font-extrabold mb-2 tracking-tight">Join Us</h2>
-            <p class="text-emerald-50 font-medium">Create your StockMaster account</p>
+            <p class="text-white/80 font-medium">Create your StockMaster account</p>
         </div>
         
         <form method="post" class="p-10 space-y-5">
@@ -14,7 +14,7 @@
             <div>
                 <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ field.label }}</label>
                 <div class="relative">
-                    <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" required class="w-full bg-slate-50 border-transparent focus:bg-white" placeholder="{{ field.label }}">
+                    <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" required class="input-field" placeholder="{{ field.label }}">
                     {% if field.errors %}
                         <p class="text-rose-500 text-[10px] mt-1 font-bold">{{ field.errors.0 }}</p>
                     {% endif %}
@@ -22,7 +22,7 @@
             </div>
             {% endfor %}
             
-            <button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-dark transition mt-4 active:scale-95">
+            <button type="submit" class="btn-primary w-full mt-4 py-4 text-base">
                 Create Account
             </button>
             

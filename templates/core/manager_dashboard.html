@@ -7,10 +7,10 @@
         <p class="text-slate-500 font-medium">Oversee inventory, manage categories, and process requests.</p>
     </div>
     <div class="flex gap-4 w-full lg:w-auto">
-        <a href="{% url 'add_category' %}" class="flex-grow lg:flex-grow-0 bg-white text-slate-700 px-6 py-3.5 rounded-2xl font-bold text-sm shadow-sm border border-slate-200 hover:bg-slate-50 transition flex items-center justify-center gap-2">
+        <a href="{% url 'add_category' %}" class="flex-grow lg:flex-grow-0 glass-card text-slate-700 px-6 py-3.5 rounded-2xl font-bold text-sm shadow-sm hover:text-primary transition flex items-center justify-center gap-2">
             <i class="fas fa-folder-plus text-primary"></i> New Category
         </a>
-        <a href="{% url 'add_product' %}" class="flex-grow lg:flex-grow-0 bg-primary text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 hover:bg-primary-dark transition flex items-center justify-center gap-2">
+        <a href="{% url 'add_product' %}" class="flex-grow lg:flex-grow-0 btn-primary px-8 py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 transition flex items-center justify-center gap-2">
             <i class="fas fa-plus"></i> Add Product
         </a>
     </div>
@@ -140,7 +140,7 @@ if (managerFilter) {
             </div>
             <h2 class="text-xl font-black text-slate-900 mb-2">Requests & Messages</h2>
             <p class="text-slate-500 text-sm mb-6">Manage user purchase requests and messages.</p>
-            <a href="{% url 'manager_requests' %}" class="bg-primary text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-primary/25 hover:bg-primary-dark transition flex items-center justify-center gap-2 w-full max-w-xs">
+            <a href="{% url 'manager_requests' %}" class="btn-primary w-full max-w-xs flex items-center justify-center gap-2">
                 View Requests <i class="fas fa-arrow-right text-sm"></i>
             </a>
         </div>

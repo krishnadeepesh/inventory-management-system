@@ -7,7 +7,7 @@
         <a href="{% url 'redirect_dashboard' %}" class="text-slate-400 hover:text-slate-900 transition"><i class="fas fa-times text-xl"></i></a>
     </div>
 
-    <div class="glass-card rounded-[2.5rem] border-slate-200 shadow-premium overflow-hidden flex flex-col h-[70vh]">
+    <div class="glass-card overflow-hidden flex flex-col h-[70vh]">
         <!-- Chat Header -->
         <div class="bg-primary p-6 text-white flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-xl border border-white/30">
@@ -23,7 +23,7 @@
         <div id="chat-box" class="flex-grow overflow-y-auto p-8 space-y-6 bg-slate-50/50">
             {% for msg in messages_list %}
                 {% if msg.sender == request.user %}
-                    <div class="flex justify-end">
+                    <div class="flex justify-end animate-fade-in-up">
                         <div class="max-w-[75%]">
                             <div class="bg-primary text-white p-4 rounded-2xl rounded-tr-sm shadow-md shadow-primary/10">
                                 <p class="text-sm font-medium">{{ msg.content }}</p>
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                 {% else %}
-                    <div class="flex justify-start">
+                    <div class="flex justify-start animate-fade-in-up">
                         <div class="max-w-[75%]">
                             <div class="bg-white p-4 rounded-2xl rounded-tl-sm border border-slate-100 shadow-sm">
                                 <p class="text-[10px] font-black text-primary uppercase tracking-widest mb-1">{{ msg.sender.username }}</p>
@@ -54,9 +54,9 @@
                 {% csrf_token %}
                 <div class="flex-grow">
                     <input type="text" name="content" required placeholder="Type your message here..." 
-                           class="w-full bg-slate-50 border-transparent px-6 py-4 rounded-2xl focus:bg-white focus:ring-primary focus:border-primary">
+                           class="input-field py-4">
                 </div>
-                <button type="submit" class="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 hover:bg-primary-dark hover:-translate-y-1 transition active:scale-95">
+                <button type="submit" class="w-14 h-14 btn-primary rounded-2xl flex items-center justify-center p-0 flex-shrink-0">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </form>

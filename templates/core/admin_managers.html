@@ -9,10 +9,10 @@
 
 {% block content %}
 <div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-    <a href="{% url 'admin_dashboard' %}" class="btn-primary bg-white text-slate-700 border border-slate-200 shadow-sm hover:bg-slate-50 text-sm py-2 px-4 flex items-center gap-2">
+    <a href="{% url 'admin_dashboard' %}" class="glass-card text-slate-700 hover:text-primary text-sm py-2 px-4 flex items-center gap-2">
         <i class="fas fa-arrow-left"></i> Back to Dashboard
     </a>
-    <a href="{% url 'admin_add_manager' %}" class="btn-primary bg-primary text-white shadow-sm shadow-primary/30 text-sm py-2 px-4 flex items-center gap-2">
+    <a href="{% url 'admin_add_manager' %}" class="btn-primary text-sm py-2 px-4 flex items-center gap-2">
         <i class="fas fa-user-plus"></i> Add New Manager
     </a>
 </div>

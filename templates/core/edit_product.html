@@ -8,7 +8,7 @@
         </a>
     </div>
 
-    <div class="premium-card p-10">
+    <div class="glass-card p-10">
         <h1 class="text-3xl font-black text-slate-900 mb-8 tracking-tight">{% if form.instance.pk %}Edit{% else %}New{% endif %} Product</h1>
         
         <form method="post" enctype="multipart/form-data" class="space-y-6">
@@ -16,12 +16,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Product Name</label>
-                    <input type="text" name="name" value="{{ form.name.value|default:'' }}" required class="w-full bg-slate-50 border-transparent focus:bg-white" placeholder="e.g. Eco-Friendly Laptop Bag">
+                    <input type="text" name="name" value="{{ form.name.value|default:'' }}" required class="input-field" placeholder="e.g. Eco-Friendly Laptop Bag">
                 </div>
                 
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Category</label>
-                    <select name="category" class="w-full bg-slate-50 border-transparent focus:bg-white">
+                    <select name="category" class="input-field bg-white">
                         {% for cat in form.category.field.queryset %}
                             <option value="{{ cat.id }}" {% if form.category.value|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
                         {% endfor %}
@@ -30,12 +30,12 @@
 
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (₹)</label>
-                    <input type="number" step="0.01" name="price" value="{{ form.price.value|default:'' }}" required class="w-full bg-slate-50 border-transparent focus:bg-white">
+                    <input type="number" step="0.01" name="price" value="{{ form.price.value|default:'' }}" required class="input-field">
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Current Stock</label>
-                    <input type="number" name="stock" value="{{ form.stock.value|default:'' }}" required class="w-full bg-slate-50 border-transparent focus:bg-white">
+                    <input type="number" name="stock" value="{{ form.stock.value|default:'' }}" required class="input-field">
                 </div>
 
                 <div>
@@ -45,11 +45,11 @@
 
                 <div class="md:col-span-2">
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Description</label>
-                    <textarea name="description" rows="4" class="w-full bg-slate-50 border-transparent focus:bg-white" placeholder="Describe the product features...">{{ form.description.value|default:'' }}</textarea>
+                    <textarea name="description" rows="4" class="input-field" placeholder="Describe the product features...">{{ form.description.value|default:'' }}</textarea>
                 </div>
             </div>
             
-            <button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-dark transition mt-4 active:scale-95">
+            <button type="submit" class="btn-primary w-full mt-4 py-4 text-base">
                 {% if form.instance.pk %}Update{% else %}Create{% endif %} Product
             </button>
         </form>
