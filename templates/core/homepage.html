@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="flex flex-col min-h-[80vh] justify-center pt-10 pb-20">
     
@@ -11,7 +11,7 @@
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight">
                 Manage your inventory with <br class="hidden lg:block" />
                 <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent relative inline-block">
-                    Pro Precision.
+                    Stock Master.
                     <!-- Small decorative underline -->
                     <span class="absolute bottom-0 left-0 w-full h-2 bg-accent/20 blur-sm rounded-full -z-10"></span>
                 </span>
@@ -21,72 +21,25 @@
             </p>
             
             <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-                <a href="{% url 'signup' %}" class="btn-primary w-full sm:w-auto px-8 py-4 text-base flex items-center justify-center gap-2 group">
-                    <span>Start Free Trial</span>
-                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                <a href="#features" class="btn-primary w-full sm:w-auto px-8 py-4 text-base flex items-center justify-center gap-2 group">
+                    <span>Explore Features</span>
+                    <i class="fas fa-arrow-down group-hover:translate-y-1 transition-transform"></i>
                 </a>
-                <a href="{% url 'login' %}" class="glass-card w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-slate-700 hover:text-primary transition flex items-center justify-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center animate-pulse">
-                        <i class="fas fa-play text-[10px] ml-0.5"></i>
-                    </div>
-                    View Demo
+                <a href="#features" class="glass-card w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-slate-700 hover:text-primary transition flex items-center justify-center gap-2">
+                    Learn More
                 </a>
             </div>
         </div>
         
-        <!-- Right: Floating Illustration Container -->
-        <div class="relative w-full max-w-lg mx-auto lg:max-w-none lg:mx-0 aspect-square lg:aspect-auto h-[400px] lg:h-[500px] flex items-center justify-center animate-float">
-            <!-- Glassmorphic Mockup Container -->
-            <div class="glass-card w-full h-full rounded-[3rem] p-6 relative overflow-visible border-white/60">
-                <!-- Decorative Elements -->
-                <div class="absolute -top-6 -right-6 w-24 h-24 bg-accent/20 rounded-full blur-2xl"></div>
-                <div class="absolute -bottom-8 -left-8 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
-                
-                <div class="w-full h-full bg-white/40 rounded-[2rem] border border-white/50 flex flex-col overflow-hidden shadow-inner relative">
-                    <!-- Faux App Header -->
-                    <div class="h-12 border-b border-white/50 flex items-center px-6 gap-2">
-                        <div class="w-3 h-3 rounded-full bg-rose-400/80"></div>
-                        <div class="w-3 h-3 rounded-full bg-amber-400/80"></div>
-                        <div class="w-3 h-3 rounded-full bg-emerald-400/80"></div>
-                    </div>
-                    <!-- Faux App Body -->
-                    <div class="flex-grow p-6 flex flex-col gap-4">
-                        <div class="w-1/3 h-4 bg-slate-200/50 rounded-full"></div>
-                        <div class="w-2/3 h-8 bg-primary/10 rounded-xl mb-4"></div>
-                        
-                        <div class="flex gap-4">
-                            <div class="w-12 h-12 bg-white/50 rounded-xl flex-shrink-0"></div>
-                            <div class="flex-grow space-y-2">
-                                <div class="w-full h-3 bg-slate-200/50 rounded-full"></div>
-                                <div class="w-4/5 h-3 bg-slate-200/50 rounded-full"></div>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="w-12 h-12 bg-white/50 rounded-xl flex-shrink-0"></div>
-                            <div class="flex-grow space-y-2">
-                                <div class="w-full h-3 bg-slate-200/50 rounded-full"></div>
-                                <div class="w-3/5 h-3 bg-slate-200/50 rounded-full"></div>
-                            </div>
-                        </div>
-                        <!-- Floating badge -->
-                        <div class="absolute bottom-10 right-[-20px] glass-card px-4 py-3 rounded-xl flex items-center gap-3 animate-float-delayed">
-                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-slate-800">Stock Updated</p>
-                                <p class="text-[10px] text-slate-500">Just now</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Right: Image Illustration -->
+        <div class="relative w-full max-w-lg mx-auto lg:max-w-none lg:mx-0 flex items-center justify-center animate-float">
+            <img src="{% static 'img/hero.png' %}" alt="Inventory Management" class="w-full h-auto drop-shadow-2xl">
         </div>
         
     </div>
 
     <!-- Feature Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full z-10">
+    <div id="features" class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full z-10 pt-10">
         <div class="glass-card p-8 group text-center md:text-left hover:bg-white/90">
             <div class="w-14 h-14 bg-gradient-to-br from-indigo-100 to-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto md:mx-0 mb-6 text-2xl shadow-sm border border-white group-hover:scale-110 transition-transform">
                 <i class="fas fa-bolt"></i>
