@@ -52,3 +52,8 @@ class FeedbackMessageForm(forms.ModelForm):
     class Meta:
         model = FeedbackMessage
         fields = ['content']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']

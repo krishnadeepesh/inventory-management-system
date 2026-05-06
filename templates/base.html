@@ -221,12 +221,62 @@
                         <p class="text-slate-800 text-sm font-bold leading-none">{{ user.username }}</p>
                         <p class="text-primary text-[10px] font-black uppercase tracking-wider mt-1">{{ user.role }}</p>
                     </div>
+                    {% if user.role == 'USER' %}
+                    <div class="relative group">
+                        <button class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-sm font-bold shadow-md shadow-primary/20 focus:outline-none transition-transform active:scale-95 cursor-pointer">
+                            {{ user.username.0|upper }}
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div class="absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl border border-white/60 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50">
+                            <div class="p-2 flex flex-col gap-1">
+                                <a href="{% url 'user_profile' %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">
+                                    <i class="fas fa-user-circle"></i> View Profile
+                                </a>
+                                <button type="button" onclick="confirmDeleteAccount()" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 rounded-xl transition-colors w-full text-left">
+                                    <i class="fas fa-user-times"></i> Delete Account
+                                </button>
+                                <div class="h-px bg-slate-100 my-1 mx-2"></div>
+                                <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hidden Delete Account Form -->
+                    <form id="delete-account-form" action="{% url 'delete_account' %}" method="post" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                    <script>
+                        function confirmDeleteAccount() {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: "All your orders and data will be permanently deleted.",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#ef4444',
+                                cancelButtonColor: '#94a3b8',
+                                confirmButtonText: 'Yes, delete it!',
+                                cancelButtonText: 'No, keep it',
+                                customClass: {
+                                    popup: 'rounded-3xl shadow-xl border border-slate-100',
+                                    confirmButton: 'rounded-xl font-bold py-3 px-6',
+                                    cancelButton: 'rounded-xl font-bold py-3 px-6'
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    document.getElementById('delete-account-form').submit();
+                                }
+                            });
+                        }
+                    </script>
+                    {% else %}
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-sm font-bold shadow-md shadow-primary/20">
                         {{ user.username.0|upper }}
                     </div>
                     <a href="{% url 'logout' %}" title="Logout" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100/50 text-slate-500 hover:text-rose-500 hover:bg-rose-50 transition">
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
+                    {% endif %}
                 {% else %}
                     <a href="{% url 'signup' %}" class="btn-primary py-2.5 px-6 hidden sm:block">Sign Up</a>
                 {% endif %}

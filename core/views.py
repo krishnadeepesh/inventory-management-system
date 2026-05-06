@@ -7,7 +7,7 @@ from django.db.models import Sum, Count
 from django.contrib import messages
 from django.http import JsonResponse
 from .models import User, Category, Product, PurchaseRequest, FeedbackMessage
-from .forms import UserSignupForm, CategoryForm, ProductForm, PurchaseRequestForm, FeedbackMessageForm
+from .forms import UserSignupForm, CategoryForm, ProductForm, PurchaseRequestForm, FeedbackMessageForm, UserProfileForm
 from django.db import transaction
 
 @never_cache
@@ -400,3 +400,34 @@ def feedback(request, receiver_id):
     ).order_by('created_at')
     
     return render(request, 'core/feedback.html', {'form': form, 'receiver': receiver, 'messages_list': messages_list})
+
+@login_required
+@never_cache
+def view_profile(request):
+    if request.user.role != 'USER':
+        return redirect('redirect_dashboard')
+        
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('user_dashboard')
+    else:
+        form = UserProfileForm(instance=request.user)
+        
+    return render(request, 'core/user_profile.html', {'form': form})
+
+@login_required
+@never_cache
+def delete_account(request):
+    if request.user.role != 'USER':
+        return redirect('redirect_dashboard')
+        
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        messages.success(request, 'Your account and all associated data have been permanently deleted.')
+        return redirect('homepage')
+    return redirect('user_dashboard')

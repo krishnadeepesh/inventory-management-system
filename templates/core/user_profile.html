@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+<div class="mb-4">
+    <a href="{% url 'user_dashboard' %}" class="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-primary transition group">
+        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-8">
+    <div class="glass-card p-10">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-primary/20">
+                {{ user.username.0|upper }}
+            </div>
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Your Profile</h1>
+                <p class="text-slate-500 font-medium">Update your account details</p>
+            </div>
+        </div>
+        
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" value="{{ field.value|default:'' }}" class="input-field" required placeholder="{{ field.label }}">
+                {% if field.errors %}
+                    <p class="text-rose-500 text-[10px] mt-1 font-bold">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div class="pt-4 flex gap-4">
+                <button type="submit" class="btn-primary flex-1 py-4 text-base flex items-center justify-center gap-2">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -31,6 +31,8 @@ urlpatterns = [
     # User
     path('user-dashboard/', views.user_dashboard, name='user_dashboard'),
     path('user/requests/', views.user_requests, name='user_requests'),
+    path('user/profile/', views.view_profile, name='user_profile'),
+    path('user/delete-account/', views.delete_account, name='delete_account'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
     
     # Common
