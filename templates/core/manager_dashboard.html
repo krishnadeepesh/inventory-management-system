@@ -79,10 +79,13 @@
                             </td>
                         </tr>
                         {% empty %}
-                        <tr id="manager-empty-row">
+                        <tr id="manager-db-empty-row">
                             <td colspan="4" class="px-6 py-12 text-center text-slate-400 italic font-medium">No products available.</td>
                         </tr>
                         {% endfor %}
+                        <tr id="manager-filter-empty-row" style="display: none;">
+                            <td colspan="4" class="px-6 py-12 text-center text-slate-400 italic font-medium">No products exist in this category.</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -104,8 +107,12 @@ if (managerFilter) {
                 row.style.display = 'none';
             }
         });
-        const emptyRow = document.getElementById('manager-empty-row');
-        if (emptyRow) emptyRow.style.display = visible === 0 ? '' : 'none';
+        const dbEmptyRow = document.getElementById('manager-db-empty-row');
+        const filterEmptyRow = document.getElementById('manager-filter-empty-row');
+        
+        if (!dbEmptyRow && filterEmptyRow) {
+            filterEmptyRow.style.display = visible === 0 ? '' : 'none';
+        }
     });
 }
 </script>

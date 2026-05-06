@@ -51,12 +51,6 @@
         </div>
         View Transaction History
     </a>
-    <a href="{% url 'admin_managers' %}" class="flex-1 glass-card text-slate-700 py-4 px-6 font-bold text-center flex items-center justify-center gap-3 group">
-        <div class="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
-            <i class="fas fa-people-group"></i>
-        </div>
-        Manage Team
-    </a>
     <a href="{% url 'admin_add_manager' %}" class="flex-1 btn-primary py-4 px-6 font-bold text-center flex items-center justify-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center">
             <i class="fas fa-user-plus"></i>
@@ -117,10 +111,13 @@
                     <td><span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded-lg">{{ product.manager.username }}</span></td>
                 </tr>
                 {% empty %}
-                <tr id="admin-empty-row">
+                <tr id="admin-db-empty-row">
                     <td colspan="5" class="text-center py-12 text-slate-400 italic text-sm">No products found.</td>
                 </tr>
                 {% endfor %}
+                <tr id="admin-filter-empty-row" style="display: none;">
+                    <td colspan="5" class="text-center py-12 text-slate-400 italic text-sm font-medium">No products exist in this category.</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -161,8 +158,12 @@ if (adminFilter) {
             row.style.display = show ? '' : 'none';
             if (show) visible++;
         });
-        const emptyRow = document.getElementById('admin-empty-row');
-        if (emptyRow) emptyRow.style.display = visible === 0 ? '' : 'none';
+        const dbEmptyRow = document.getElementById('admin-db-empty-row');
+        const filterEmptyRow = document.getElementById('admin-filter-empty-row');
+        
+        if (!dbEmptyRow && filterEmptyRow) {
+            filterEmptyRow.style.display = visible === 0 ? '' : 'none';
+        }
     });
 }
 </script>
